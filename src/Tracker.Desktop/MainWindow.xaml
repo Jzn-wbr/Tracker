@@ -1,0 +1,200 @@
+<Window x:Class="Tracker.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        mc:Ignorable="d"
+        Title="Tracker"
+        Width="1280"
+        Height="820"
+        WindowState="Maximized"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        Background="{DynamicResource AppBackground}"
+        FontFamily="Segoe UI Variable Display"
+        Icon="pack://application:,,,/favicon.ico">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="32"
+                            ResizeBorderThickness="6"
+                            CornerRadius="0"
+                            GlassFrameThickness="0" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{DynamicResource AppBackground}">
+            <Grid Margin="12,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Width="16" Height="16" Source="pack://application:,,,/favicon.ico" Margin="0,0,8,0" />
+                    <TextBlock Text="Tracker" Foreground="White" FontWeight="SemiBold" />
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Background="Transparent"
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True" />
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Content="-" Width="40" Height="30" Click="Minimize_Click" Background="#2F5BD1" Foreground="White" FontSize="14" FontWeight="SemiBold" BorderThickness="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                    <Button Width="40" Height="30" Click="Maximize_Click" Background="#2F5BD1" BorderThickness="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,0,0">
+                        <Grid Width="14" Height="14">
+                            <Path Stroke="White" StrokeThickness="1.6" Data="M2,5 L2,12 L9,12" />
+                            <Path Stroke="White" StrokeThickness="1.6" Data="M5,2 L12,2 L12,9" />
+                            <Path Stroke="White" StrokeThickness="1.6" Data="M5,2 L5,9 L12,9" />
+                        </Grid>
+                    </Button>
+                    <Button Content="X" Width="40" Height="30" Click="Close_Click" Background="#2F5BD1" Foreground="White" FontSize="13" FontWeight="SemiBold" BorderThickness="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+
+
+        <Border Grid.Column="0"
+                CornerRadius="26"
+                BorderBrush="#00000000"
+                BorderThickness="0"
+                Background="{StaticResource KpiBlue}">
+            <StackPanel Margin="18">
+                <Border Background="#1E40AF" CornerRadius="14" Padding="12,8" HorizontalAlignment="Left">
+                    <TextBlock Text="Tableau de bord" FontWeight="SemiBold" Foreground="White" FontSize="16" />
+                </Border>
+                
+                <Border Background="#2F5BD1" CornerRadius="14" Padding="12" Margin="0,24,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Etat" FontSize="12" FontWeight="SemiBold" Foreground="White" />
+                        <TextBlock Text="Agent actif" FontWeight="SemiBold" Foreground="White" />
+                        <TextBlock Text="Derniere mise a jour: auto" Foreground="#E0E7FF" FontSize="11" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Hidden">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,18">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Width="250" Style="{StaticResource KpiCard}" Background="{StaticResource KpiBlue}">
+                        <StackPanel>
+                            <TextBlock Text="Aujourd'hui" Foreground="#E0E7FF" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding TotalToday}" FontSize="30" FontWeight="SemiBold" Foreground="White" />
+                            <TextBlock Text="Temps total" Foreground="#E0E7FF" FontSize="12" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Width="250" Style="{StaticResource KpiCard}" Background="{StaticResource KpiIndigo}">
+                        <StackPanel>
+                            <TextBlock Text="7 jours" Foreground="#EDE9FE" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding TotalWeek}" FontSize="30" FontWeight="SemiBold" Foreground="White" />
+                            <TextBlock Text="Temps total" Foreground="#EDE9FE" FontSize="12" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="4" Width="250" Style="{StaticResource KpiCard}" Background="{StaticResource KpiGreen}">
+                        <StackPanel>
+                            <TextBlock Text="Focus" Foreground="#D1FAE5" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding TopAppName}" FontSize="26" FontWeight="SemiBold" Foreground="White" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding TopAppDuration}" Foreground="#D1FAE5" FontSize="12" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Card}" Background="{StaticResource SectionBlue}" Margin="0,0,18,18">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="260" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Timeline aujourd'hui" Style="{StaticResource SectionTitleOnColor}" />
+                            <oxy:PlotView Grid.Row="1"
+                                          Model="{Binding TimelinePlot}"
+                                          Background="Transparent"
+                                          BorderThickness="0" />
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource Card}" Background="{StaticResource SectionPurple}" Margin="0,0,0,18">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="260" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Top applis (7 jours)" Style="{StaticResource SectionTitleOnColor}" />
+                            <oxy:PlotView Grid.Row="1"
+                                          Model="{Binding TopAppsPlot}"
+                                          Background="Transparent"
+                                          BorderThickness="0" />
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Card}" Background="{StaticResource SectionGreen}" Margin="0,0,18,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="240" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Top sites (7 jours)" Style="{StaticResource SectionTitleOnColor}" />
+                            <oxy:PlotView Grid.Row="1"
+                                          Model="{Binding TopSitesPlot}"
+                                          Background="Transparent"
+                                          BorderThickness="0" />
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}" Background="{StaticResource SectionTeal}">
+                        <StackPanel>
+                            <TextBlock Text="Parametres" Style="{StaticResource SectionTitleOnColor}" />
+                            <CheckBox Content="Pause tracking" IsChecked="{Binding IsPaused}" Margin="0,0,0,6" />
+                            <CheckBox Content="Demarrage auto" IsChecked="{Binding AutoStartEnabled}" Margin="0,0,0,12" />
+                            <TextBlock Text="Exclure applis (une par ligne)" Foreground="{DynamicResource TextMuted}" FontSize="12" />
+                            <TextBox Text="{Binding ExcludedAppsText}" AcceptsReturn="True" Height="80" Margin="0,4,0,10" />
+                            <TextBlock Text="Exclure sites (domaines, un par ligne)" Foreground="{DynamicResource TextMuted}" FontSize="12" />
+                            <TextBox Text="{Binding ExcludedSitesText}" AcceptsReturn="True" Height="80" Margin="0,4,0,12" />
+                            <Button Content="Enregistrer" Command="{Binding SaveSettingsCommand}" Width="140" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

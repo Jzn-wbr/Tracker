@@ -1,0 +1,29 @@
+﻿# Build artifacts
+**/bin/
+**/obj/
+**/dist/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.rsuser
+
+# Logs & caches
+*.log
+*.cache
+
+# Debug symbols
+*.pdb
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Rider/others
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
