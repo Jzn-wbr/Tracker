@@ -1,6 +1,14 @@
-# Tracker
+<p align="center">
+  <img src="docs/assets/tracker-logo.png" alt="Logo Tracker" width="112">
+</p>
 
-## Comprendre son temps numérique, simplement.
+<h1 align="center">Tracker</h1>
+
+<p align="center">Comprendre son temps numérique, simplement.</p>
+
+<p align="center">
+  <img src="images/vuedensemble.png" alt="Vue d’ensemble de Tracker" width="900">
+</p>
 
 Tracker est une application Windows native qui aide à comprendre comment le temps est réellement passé sur l’ordinateur. Elle suit l’activité des applications et des sites utilisés, puis la transforme en informations lisibles — sans tableau de bord surchargé.
 
@@ -31,6 +39,12 @@ La page Habitudes répond à une autre question : **qu’est-ce qui change dans 
 
 Les comparaisons utilisent uniquement les données disponibles. Les périodes partielles et les absences de données précédentes sont signalées proprement, sans inventer de métriques.
 
+<p align="center">
+  <img src="images/habitudes.png" alt="Page Habitudes de Tracker" width="900">
+</p>
+
+Les deux vues sont complémentaires : la **Vue d’ensemble** montre l’activité actuelle, tandis que **Habitudes** met en évidence les évolutions qui méritent votre attention.
+
 ## Pensé pour rester discret
 
 Tracker privilégie une expérience calme : fond clair, cartes lisibles, contrastes maîtrisés et informations utiles uniquement. Les réglages peuvent être ouverts à la demande depuis l’icône dédiée, puis repliés pour retrouver tout l’espace d’analyse.
@@ -59,4 +73,3 @@ dotnet build Tracker.sln --no-restore
 ## Projet en évolution
 
 Tracker est conçu autour d’une idée volontairement simple : rendre l’activité numérique compréhensible en quelques secondes, sans transformer le suivi en une nouvelle source de distraction.
-
