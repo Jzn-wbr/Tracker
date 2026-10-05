@@ -42,7 +42,7 @@
                     <Button Tag="{Binding IsHabitsPage}" Command="{Binding ShowHabitsCommand}" Style="{StaticResource SidebarNavButton}" Margin="0,6,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="▦" Foreground="#9EC0FF" FontSize="17" Margin="0,0,10,0" />
-                            <TextBlock Text="Habitudes" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBlock Text="Habitudes" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
