@@ -34,18 +34,75 @@ public sealed class SessionRepository : ISessionRepository
         cmd.ExecuteNonQuery();
     }
 
+    public void DeleteAll()
+    {
+        using var connection = _db.OpenConnection();
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "DELETE FROM sessions;";
+        cmd.ExecuteNonQuery();
+    }
+
+    public IReadOnlyList<SessionExportRow> GetAll()
+    {
+        var rows = new List<SessionExportRow>();
+        using var connection = _db.OpenConnection();
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = """
+            SELECT start_utc, end_utc, duration_seconds, process_name, process_path,
+                   window_title, url, url_domain
+            FROM sessions
+            ORDER BY start_utc;
+            """;
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            if (!DateTime.TryParse(reader.GetString(0), null, System.Globalization.DateTimeStyles.RoundtripKind, out var startUtc)
+                || !DateTime.TryParse(reader.GetString(1), null, System.Globalization.DateTimeStyles.RoundtripKind, out var endUtc))
+            {
+                continue;
+            }
+
+            rows.Add(new SessionExportRow
+            {
+                StartUtc = startUtc,
+                EndUtc = endUtc,
+                DurationSeconds = reader.GetInt64(2),
+                ProcessName = reader.GetString(3),
+                ProcessPath = reader.GetString(4),
+                WindowTitle = reader.GetString(5),
+                Url = reader.GetString(6),
+                UrlDomain = reader.GetString(7)
+            });
+        }
+
+        return rows;
+    }
+
     public long GetTotalSeconds(DateTime utcStart, DateTime utcEnd)
     {
         using var connection = _db.OpenConnection();
         using var cmd = connection.CreateCommand();
         cmd.CommandText = """
-            SELECT COALESCE(SUM(duration_seconds), 0)
+            SELECT start_utc, end_utc
             FROM sessions
-            WHERE start_utc >= $start AND end_utc <= $end;
+            WHERE start_utc < $end AND end_utc > $start;
             """;
         cmd.Parameters.AddWithValue("$start", utcStart.ToString("O"));
         cmd.Parameters.AddWithValue("$end", utcEnd.ToString("O"));
-        return Convert.ToInt64(cmd.ExecuteScalar());
+        using var reader = cmd.ExecuteReader();
+        long total = 0;
+        while (reader.Read())
+        {
+            if (!TryReadRange(reader, 0, out var start, out var end))
+            {
+                continue;
+            }
+
+            total += OverlapSeconds(start, end, utcStart, utcEnd);
+        }
+
+        return total;
     }
 
     public IReadOnlyList<AggregateItem> GetTopApps(DateTime utcStart, DateTime utcEnd, int limit)
@@ -66,7 +123,7 @@ public sealed class SessionRepository : ISessionRepository
         cmd.CommandText = """
             SELECT start_utc, end_utc
             FROM sessions
-            WHERE start_utc >= $start AND end_utc <= $end;
+            WHERE start_utc < $end AND end_utc > $start;
             """;
         cmd.Parameters.AddWithValue("$start", utcStart.ToString("O"));
         cmd.Parameters.AddWithValue("$end", utcEnd.ToString("O"));
@@ -79,11 +136,6 @@ public sealed class SessionRepository : ISessionRepository
                 continue;
             }
             if (!DateTime.TryParse(reader.GetString(1), null, System.Globalization.DateTimeStyles.RoundtripKind, out var endUtc))
-            {
-                continue;
-            }
-
-            if (endUtc <= utcStart || startUtc >= utcEnd)
             {
                 continue;
             }
@@ -108,6 +160,13 @@ public sealed class SessionRepository : ISessionRepository
             }
         }
 
+        var firstBucket = new DateTime(utcStart.Year, utcStart.Month, utcStart.Day, utcStart.Hour, 0, 0, DateTimeKind.Utc);
+        var lastBucket = new DateTime(utcEnd.Year, utcEnd.Month, utcEnd.Day, utcEnd.Hour, 0, 0, DateTimeKind.Utc);
+        for (var bucket = firstBucket; bucket <= lastBucket; bucket = bucket.AddHours(1))
+        {
+            totalsByHour.TryAdd(bucket, 0);
+        }
+
         return totalsByHour
             .OrderBy(kvp => kvp.Key)
             .Select(kvp => new TimelinePoint
@@ -125,32 +184,56 @@ public sealed class SessionRepository : ISessionRepository
         int limit,
         bool includeEmpty)
     {
-        var results = new List<AggregateItem>();
         using var connection = _db.OpenConnection();
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $"""
-            SELECT {column} AS key, COALESCE(SUM(duration_seconds), 0) AS total
+            SELECT {column} AS key, start_utc, end_utc
             FROM sessions
-            WHERE start_utc >= $start AND end_utc <= $end
+            WHERE start_utc < $end AND end_utc > $start
             {(includeEmpty ? string.Empty : $"AND {column} <> ''")}
-            GROUP BY key
-            ORDER BY total DESC
-            LIMIT $limit;
+            ;
             """;
         cmd.Parameters.AddWithValue("$start", utcStart.ToString("O"));
         cmd.Parameters.AddWithValue("$end", utcEnd.ToString("O"));
-        cmd.Parameters.AddWithValue("$limit", limit);
-
         using var reader = cmd.ExecuteReader();
+        var totals = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
         while (reader.Read())
         {
-            results.Add(new AggregateItem
+            if (!TryReadRange(reader, 1, out var start, out var end))
             {
-                Key = reader.GetString(0),
-                TotalSeconds = reader.GetInt64(1)
-            });
+                continue;
+            }
+
+            var seconds = OverlapSeconds(start, end, utcStart, utcEnd);
+            if (seconds <= 0)
+            {
+                continue;
+            }
+
+            var key = reader.GetString(0);
+            totals.TryGetValue(key, out var existing);
+            totals[key] = existing + seconds;
         }
 
-        return results;
+        return totals
+            .OrderByDescending(item => item.Value)
+            .Take(Math.Max(0, limit))
+            .Select(item => new AggregateItem { Key = item.Key, TotalSeconds = item.Value })
+            .ToList();
+    }
+
+    private static bool TryReadRange(SqliteDataReader reader, int offset, out DateTime startUtc, out DateTime endUtc)
+    {
+        startUtc = default;
+        endUtc = default;
+        return DateTime.TryParse(reader.GetString(offset), null, System.Globalization.DateTimeStyles.RoundtripKind, out startUtc)
+            && DateTime.TryParse(reader.GetString(offset + 1), null, System.Globalization.DateTimeStyles.RoundtripKind, out endUtc);
+    }
+
+    private static long OverlapSeconds(DateTime start, DateTime end, DateTime rangeStart, DateTime rangeEnd)
+    {
+        var overlapStart = start > rangeStart ? start : rangeStart;
+        var overlapEnd = end < rangeEnd ? end : rangeEnd;
+        return overlapEnd <= overlapStart ? 0 : (long)(overlapEnd - overlapStart).TotalSeconds;
     }
 }

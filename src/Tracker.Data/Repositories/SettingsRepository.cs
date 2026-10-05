@@ -43,17 +43,18 @@ public sealed class SettingsRepository : ISettingsRepository
         using var connection = _db.OpenConnection();
         using var tx = connection.BeginTransaction();
 
-        Upsert(connection, PauseKey, settings.PauseTracking ? "1" : "0");
-        Upsert(connection, AutoStartKey, settings.AutoStartEnabled ? "1" : "0");
-        Upsert(connection, AppsKey, settings.ExcludedApps ?? string.Empty);
-        Upsert(connection, SitesKey, settings.ExcludedSites ?? string.Empty);
+        Upsert(connection, tx, PauseKey, settings.PauseTracking ? "1" : "0");
+        Upsert(connection, tx, AutoStartKey, settings.AutoStartEnabled ? "1" : "0");
+        Upsert(connection, tx, AppsKey, settings.ExcludedApps ?? string.Empty);
+        Upsert(connection, tx, SitesKey, settings.ExcludedSites ?? string.Empty);
 
         tx.Commit();
     }
 
-    private static void Upsert(Microsoft.Data.Sqlite.SqliteConnection connection, string key, string value)
+    private static void Upsert(Microsoft.Data.Sqlite.SqliteConnection connection, Microsoft.Data.Sqlite.SqliteTransaction transaction, string key, string value)
     {
         using var cmd = connection.CreateCommand();
+        cmd.Transaction = transaction;
         cmd.CommandText = """
             INSERT INTO settings (key, value)
             VALUES ($key, $value)

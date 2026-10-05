@@ -3,148 +3,141 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <LinearGradientBrush x:Key="AppBackground" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#1E3A8A" Offset="0" />
-            <GradientStop Color="#2563EB" Offset="0.5" />
-            <GradientStop Color="#3B82F6" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="SidebarBackground" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#1E40AF" Offset="0" />
-            <GradientStop Color="#3B82F6" Offset="1" />
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="Surface" Color="#2563EB" />
-        <LinearGradientBrush x:Key="SurfaceElevated" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#3B82F6" Offset="1" />
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFF" />
-        <SolidColorBrush x:Key="TextMuted" Color="#D9E7FF" />
-        <SolidColorBrush x:Key="Accent" Color="#93C5FD" />
-        <SolidColorBrush x:Key="AccentSoft" Color="#FFFFFF22" />
-        <SolidColorBrush x:Key="BorderSubtle" Color="#00000000" />
-        <SolidColorBrush x:Key="Success" Color="#22D3EE" />
-        <LinearGradientBrush x:Key="KpiBlue" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="KpiIndigo" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="KpiGreen" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="CardTint" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="PanelGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="SectionBlue" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="SectionPurple" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="SectionGreen" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="SectionTeal" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0" />
-            <GradientStop Color="#60A5FA" Offset="1" />
-        </LinearGradientBrush>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <SolidColorBrush x:Key="AppBackground" Color="#F6F8FB" />
+        <SolidColorBrush x:Key="Surface" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SurfaceSubtle" Color="#F8FAFC" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#111827" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#64748B" />
+        <SolidColorBrush x:Key="TextMuted" Color="#94A3B8" />
+        <SolidColorBrush x:Key="BorderSubtle" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="Accent" Color="#2563EB" />
+        <SolidColorBrush x:Key="AccentHover" Color="#1D4ED8" />
+        <SolidColorBrush x:Key="AccentSoft" Color="#EAF1FF" />
+        <SolidColorBrush x:Key="Success" Color="#168A5B" />
+        <SolidColorBrush x:Key="Danger" Color="#C43434" />
 
         <Style TargetType="Window">
-            <Setter Property="FontFamily" Value="Segoe UI Variable Display" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
-
         <Style x:Key="Card" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource PanelGradient}" />
-            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="CornerRadius" Value="12" />
             <Setter Property="Padding" Value="20" />
-            <Setter Property="BorderBrush" Value="#00000000" />
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSubtle}" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="36" ShadowDepth="12" Opacity="0.2" />
+                    <DropShadowEffect Color="#0F172A" BlurRadius="8" ShadowDepth="2" Opacity="0.05" />
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="KpiCard" TargetType="Border" BasedOn="{StaticResource Card}">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="30" ShadowDepth="10" Opacity="0.18" />
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Padding" Value="18,12" />
         </Style>
-
-        <Style x:Key="SectionTitleOnColor" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
             <Setter Property="Margin" Value="0,0,0,12" />
         </Style>
-
         <Style x:Key="CardTitle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
             <Setter Property="Margin" Value="0,0,0,6" />
-            <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
         </Style>
-
         <Style x:Key="CardValue" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontSize" Value="30" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
-            <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
         </Style>
-
         <Style x:Key="CardSubtitle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
-            <Setter Property="Margin" Value="0,6,0,0" />
+            <Setter Property="Margin" Value="0,2,0,0" />
         </Style>
-
-        <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
-            <Setter Property="Margin" Value="0,0,0,12" />
-        </Style>
-
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
-
         <Style TargetType="TextBox">
             <Setter Property="BorderBrush" Value="{StaticResource BorderSubtle}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="10" />
-            <Setter Property="Background" Value="White" />
-            <Setter Property="Foreground" Value="#0F172A" />
-            <Setter Property="Margin" Value="0,0,0,0" />
-        </Style>
-
-        <Style TargetType="CheckBox">
+            <Setter Property="Padding" Value="9,7" />
+            <Setter Property="Background" Value="{StaticResource SurfaceSubtle}" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
-
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+        </Style>
         <Style TargetType="Button">
             <Setter Property="Background" Value="{StaticResource Accent}" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Padding" Value="14,8" />
             <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentHover}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSubtle}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F8FAFC" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#FFF5F5" />
+            <Setter Property="Foreground" Value="#DC2626" />
+            <Setter Property="BorderBrush" Value="#FECACA" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FEF2F2" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SidebarNavButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#94A3B8" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="3,0,0,0" />
+            <Setter Property="Padding" Value="9,10" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#22314A" />
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="True">
+                    <Setter Property="Background" Value="#2A3A55" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderBrush" Value="#3B82F6" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Application.Resources>
 </Application>

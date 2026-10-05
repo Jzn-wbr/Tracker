@@ -51,7 +51,7 @@ public class Worker : BackgroundService
                 var settings = _settingsCache.GetSnapshot();
                 if (settings.PauseTracking)
                 {
-                    _sessionTracker.Update(null, nowUtc);
+                    PersistCompletedSession(_sessionTracker.Update(null, nowUtc));
                     continue;
                 }
 
@@ -84,27 +84,7 @@ public class Worker : BackgroundService
                 }
 
                 var completed = _sessionTracker.Update(info, nowUtc);
-                if (completed != null)
-                {
-                    try
-                    {
-                        _sessionRepository.Insert(Map(completed));
-                        ServiceDiagnostics.Log(
-                            $"Session saved: {completed.ProcessName} {completed.WindowTitle} {completed.DurationSeconds}s");
-                    }
-                    catch (Exception ex)
-                    {
-                        ServiceDiagnostics.Log($"Session save failed: {ex.Message}");
-                    }
-                    if (_logger.IsEnabled(LogLevel.Debug))
-                    {
-                        _logger.LogDebug(
-                            "Session saved: {App} {Title} {Seconds}s",
-                            completed.ProcessName,
-                            completed.WindowTitle,
-                            completed.DurationSeconds);
-                    }
-                }
+                PersistCompletedSession(completed);
             }
         }
         catch (OperationCanceledException)
@@ -130,6 +110,28 @@ public class Worker : BackgroundService
                     ServiceDiagnostics.Log($"Final session save failed: {ex.Message}");
                 }
             }
+        }
+    }
+
+    private void PersistCompletedSession(SessionRecord? completed)
+    {
+        if (completed == null)
+        {
+            return;
+        }
+
+        try
+        {
+            _sessionRepository.Insert(Map(completed));
+            ServiceDiagnostics.Log($"Session saved: {completed.ProcessName} {completed.WindowTitle} {completed.DurationSeconds}s");
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("Session saved: {App} {Title} {Seconds}s", completed.ProcessName, completed.WindowTitle, completed.DurationSeconds);
+            }
+        }
+        catch (Exception ex)
+        {
+            ServiceDiagnostics.Log($"Session save failed: {ex.Message}");
         }
     }
 

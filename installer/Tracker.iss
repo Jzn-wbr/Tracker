@@ -54,11 +54,27 @@ Filename: "{sys}\sc.exe"; Parameters: "stop ""Tracker Service"""; Flags: runhidd
 Filename: "{sys}\sc.exe"; Parameters: "delete ""Tracker Service"""; Flags: runhidden
 
 [Code]
+procedure RunHidden(FileName, Parameters: String);
+var
+  ResultCode: Integer;
+begin
+  Exec(ExpandConstant(FileName), Parameters, '', SW_HIDE,
+    ewWaitUntilTerminated, ResultCode);
+end;
+
 function InitializeSetup(): Boolean;
 var
   ResultCode: Integer;
 begin
+  { Prevent the watchdog from restarting the agent while files are replaced. }
+  RunHidden('{sys}\schtasks.exe', '/Change /TN "Tracker Watchdog" /DISABLE');
+  RunHidden('{sys}\schtasks.exe', '/Change /TN "Tracker Agent" /DISABLE');
+  RunHidden('{sys}\schtasks.exe', '/End /TN "Tracker Watchdog"');
+  RunHidden('{sys}\schtasks.exe', '/End /TN "Tracker Agent"');
   Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /IM Tracker.Service.exe /T', '', SW_HIDE,
     ewWaitUntilTerminated, ResultCode);
+
+  { Give Windows a short moment to release the executable and its DLLs. }
+  Sleep(1500);
   Result := True;
 end;
