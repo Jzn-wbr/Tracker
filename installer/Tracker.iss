@@ -1,7 +1,7 @@
 [Setup]
 AppId={{D2F28B06-6844-4A62-9AD0-1CEB1B5C4C3B}
 AppName=Tracker
-AppVersion=0.1.0
+AppVersion=1.0.0
 AppPublisher=Tracker
 DefaultDirName={autopf}\Tracker
 DefaultGroupName=Tracker
