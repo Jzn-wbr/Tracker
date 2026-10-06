@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <None Remove="Images\Splashscreen.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Tracker.Data\Tracker.Data.csproj" />
   </ItemGroup>
 
@@ -19,6 +23,7 @@
 
   <ItemGroup>
     <Resource Include="..\..\icons\favicon.ico" Link="favicon.ico" />
+    <Resource Include="Images\Splashscreen.png" />
   </ItemGroup>
 
 </Project>
